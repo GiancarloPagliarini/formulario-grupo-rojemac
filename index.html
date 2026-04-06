@@ -62,6 +62,35 @@
     background: radial-gradient(circle, rgba(200,169,106,0.15) 0%, transparent 70%);
   }
 
+  .hero-brand-banner {
+    position: absolute;
+    right: 7%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  .hero-brand-banner.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .hero-brand-banner img {
+    width: 240px;
+    height: 240px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 32px rgba(0,0,0,0.22)) drop-shadow(0 2px 8px rgba(0,0,0,0.12));
+  }
+
+  body.brand-lyor .hero-brand-banner img {
+    filter: drop-shadow(0 8px 32px rgba(0,0,0,0.12)) drop-shadow(0 2px 8px rgba(0,0,0,0.07));
+  }
+
   .hero::after {
     content: '';
     position: absolute;
@@ -94,12 +123,53 @@
     border-color: var(--gold);
   }
 
+  .hero-tag-logo {
+    display: none;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: brightness(0) invert(1) drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+    opacity: 0.85;
+  }
+
+  body.brand-lyor .hero-tag-logo {
+    filter: none;
+    opacity: 1;
+  }
+
+  .hero-tag-logo.loaded {
+    display: block;
+  }
+
   .hero-tag-change {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-size: 9px;
-    opacity: 0.6;
-    border-left: 1px solid rgba(200,169,106,0.4);
-    padding-left: 10px;
-    letter-spacing: 0.1em;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    background: rgba(200,169,106,0.12);
+    border: 1px solid rgba(200,169,106,0.5);
+    border-radius: 2px;
+    padding: 3px 9px;
+    margin-left: 4px;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+
+  .hero-tag:hover .hero-tag-change {
+    background: rgba(200,169,106,0.22);
+    border-color: var(--gold);
+  }
+
+  .hero-tag-change svg {
+    flex-shrink: 0;
+    transition: transform 0.35s ease;
+  }
+
+  .hero-tag:hover .hero-tag-change svg {
+    transform: rotate(180deg);
   }
 
   .hero h1 {
@@ -689,7 +759,7 @@
   body.brand-lyor .hero h1 em       { color: #fff; font-style: italic; }
   body.brand-lyor .hero p           { color: rgba(255,255,255,0.7); }
   body.brand-lyor .hero-tag         { color: #fff; border-color: rgba(255,255,255,0.45); }
-  body.brand-lyor .hero-tag-change  { border-color: rgba(255,255,255,0.35); color: rgba(255,255,255,0.6); }
+  body.brand-lyor .hero-tag-change  { border-color: rgba(255,255,255,0.5); color: #fff; background: rgba(255,255,255,0.12); }
   body.brand-lyor .hero-step        { color: rgba(89,96,102,0.6); border-color: rgba(89,96,102,0.35); background: rgba(255,255,255,0.45); }
   body.brand-lyor .hero-step[data-tab]:hover { color: var(--ink); background: rgba(255,255,255,0.7); border-color: rgba(89,96,102,0.5); }
   body.brand-lyor .hero-step.active { color: #fff; background: var(--ink); border-color: var(--ink); }
@@ -821,6 +891,138 @@
     text-transform: uppercase;
     color: rgba(255,255,255,0.35);
   }
+
+  /* ── MODAL DE RESUMO ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,26,46,0.72);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal-box {
+    background: var(--cream);
+    border-radius: 4px;
+    width: 100%;
+    max-width: 580px;
+    max-height: 86vh;
+    overflow-y: auto;
+    transform: translateY(20px);
+    transition: transform 0.25s ease;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+  }
+
+  .modal-overlay.open .modal-box { transform: translateY(0); }
+
+  .modal-header {
+    padding: 28px 32px 18px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--cream);
+    z-index: 1;
+  }
+
+  .modal-header h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .modal-header p { font-size: 12px; color: var(--muted); }
+
+  .modal-body { padding: 8px 32px 16px; }
+
+  .modal-row {
+    display: flex;
+    gap: 16px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--cream-dark);
+    align-items: baseline;
+  }
+
+  .modal-row:last-child { border-bottom: none; }
+
+  .modal-row-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    min-width: 150px;
+    flex-shrink: 0;
+  }
+
+  .modal-row-value { font-size: 14px; color: var(--ink); flex: 1; line-height: 1.4; }
+
+  .modal-footer {
+    padding: 18px 32px 26px;
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid var(--border);
+    position: sticky;
+    bottom: 0;
+    background: var(--cream);
+  }
+
+  .modal-back-btn {
+    flex: 1;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-back-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  .modal-confirm-btn {
+    flex: 2;
+    padding: 14px;
+    background: var(--surface);
+    border: none;
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-confirm-btn:hover:not(:disabled) { background: var(--surface-hover); }
+
+  .modal-confirm-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  @media (max-width: 520px) {
+    .modal-row { flex-direction: column; gap: 3px; }
+    .modal-row-label { min-width: unset; }
+    .modal-header, .modal-body, .modal-footer { padding-left: 20px; padding-right: 20px; }
+  }
 </style>
 </head>
 <body>
@@ -851,9 +1053,13 @@
 
 <!-- HERO -->
 <div class="hero">
+  <div class="hero-brand-banner" id="heroBrandBanner">
+    <img id="heroBannerLogo" src="" alt="">
+  </div>
   <button type="button" class="hero-tag" onclick="changeBrand()">
+    <img id="heroLogo" src="" alt="" class="hero-tag-logo">
     <span id="heroTagLabel">Influencer de IA</span>
-    <span class="hero-tag-change">Trocar marca</span>
+    <span class="hero-tag-change"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>Trocar marca</span>
   </button>
   <h1 id="heroTitle">Formulário de<br><em>Cadastro de Produto</em></h1>
   <p id="heroDesc">Preencha as informações abaixo com precisão. Esses dados são essenciais para criar representações realistas do produto nas produções com a Influencer de IA.</p>
@@ -1414,6 +1620,21 @@
 </div><!-- /#panel-influencer -->
 </div><!-- /.container -->
 
+<!-- MODAL DE RESUMO -->
+<div class="modal-overlay" id="resumoOverlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Confirmar envio</h3>
+      <p>Revise as informações abaixo antes de confirmar o envio.</p>
+    </div>
+    <div class="modal-body" id="resumoBody"></div>
+    <div class="modal-footer">
+      <button type="button" class="modal-back-btn" onclick="closeResumo()">Voltar e editar</button>
+      <button type="button" class="modal-confirm-btn" id="resumoConfirm">Confirmar e Enviar</button>
+    </div>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <div class="form-footer">
   <img src="weareg.png" alt="WeareG" class="form-footer-logo">
@@ -1425,6 +1646,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  let pendingSubmit = null;
+
   // ── Brand themes ──────────────────────────────────────────────
   const brandThemes = {
     Wolff: {
@@ -1497,6 +1720,21 @@
     applyTheme(brand);
     document.getElementById('heroTagLabel').textContent = 'Influencer de IA · ' + brand;
     document.querySelectorAll('input[name="marca_selecionada"]').forEach(i => i.value = brand);
+    const logoMap = { Wolff: 'wolff_semfundo.png', Lyor: 'lyor_semfundo.png' };
+    const logoEl = document.getElementById('heroLogo');
+    const bannerEl = document.getElementById('heroBannerLogo');
+    const bannerWrapper = document.getElementById('heroBrandBanner');
+    if (logoMap[brand]) {
+      logoEl.src = logoMap[brand];
+      logoEl.alt = brand;
+      logoEl.classList.add('loaded');
+      bannerEl.src = logoMap[brand];
+      bannerEl.alt = brand;
+      bannerWrapper.classList.add('visible');
+    } else {
+      logoEl.classList.remove('loaded');
+      bannerWrapper.classList.remove('visible');
+    }
   }
 
   function changeBrand() {
@@ -1655,115 +1893,210 @@
     return valid;
   }
 
+  // ── Modal de resumo ───────────────────────────────────────────
+  function showResumo(rows, onConfirm) {
+    const body = document.getElementById('resumoBody');
+    body.innerHTML = rows.map(({ label, value }) =>
+      `<div class="modal-row"><span class="modal-row-label">${label}</span><span class="modal-row-value">${value}</span></div>`
+    ).join('');
+    pendingSubmit = onConfirm;
+    document.getElementById('resumoOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeResumo() {
+    document.getElementById('resumoOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    pendingSubmit = null;
+    const btn = document.getElementById('resumoConfirm');
+    btn.textContent = 'Confirmar e Enviar';
+    btn.disabled = false;
+  }
+
+  document.getElementById('resumoConfirm').addEventListener('click', function() {
+    if (pendingSubmit) pendingSubmit();
+  });
+
+  document.getElementById('resumoOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeResumo();
+  });
+
+  function buildResumoProduto(form) {
+    const rows = [];
+    const add = (label, value) => { if (value) rows.push({ label, value }); };
+    const conjuntoLabels = { individual: 'Produto individual', conjunto: 'Faz parte de conjunto', jogo: 'Vendido em jogo' };
+    const conj = getRadioValue(form, 'conjunto');
+
+    add('Marca', form.marca_selecionada.value);
+    add('Nome do produto', form.nome_produto.value);
+    add('URL do produto', form.url_produto.value);
+    add('Tipo', conjuntoLabels[conj] || conj);
+    add('Quantidade de peças', form.qtd_pecas.value);
+    add('Altura (cm)', form.altura.value);
+    add('Largura / Diâmetro (cm)', form.largura.value);
+    add('Cor principal', form.cor_principal.value);
+
+    const corSec = getCheckedValues(form, 'cor_sec');
+    if (corSec.length) add('Cores secundárias', corSec.join(', '));
+
+    const fotoLabels = { foto_frente: 'Frente', foto_verso: 'Verso', foto_lateral: 'Lateral', foto_topo: 'Topo/Base', foto_uso: 'Contexto de Uso', foto_segurando: 'Pessoa Segurando' };
+    const fotosEnviadas = Object.entries(fotoLabels).filter(([name]) => getFileFromInput(form, name)).map(([, l]) => l);
+    if (fotosEnviadas.length) add('Fotos', fotosEnviadas.join(', '));
+
+    return rows;
+  }
+
   // ── Form Produto ──────────────────────────────────────────────
-  document.getElementById('formProduto').addEventListener('submit', async function(e) {
+  document.getElementById('formProduto').addEventListener('submit', function(e) {
     e.preventDefault();
     if (!validateFields(this, ['conjunto'], ['foto_frente', 'foto_verso', 'foto_lateral'])) return;
 
-    const btn = this.querySelector('.submit-btn');
-    btn.innerHTML = '<span>Enviando...</span>';
-    btn.disabled = true;
+    const form = this;
+    showResumo(buildResumoProduto(form), async () => {
+      const confirmBtn = document.getElementById('resumoConfirm');
+      confirmBtn.textContent = 'Enviando...';
+      confirmBtn.disabled = true;
 
-    try {
-      const folder = 'produtos/' + Date.now();
-
-      const photoFields = ['foto_frente', 'foto_verso', 'foto_lateral', 'foto_topo', 'foto_uso', 'foto_segurando'];
-      const photoUrls = {};
-      for (const name of photoFields) {
-        const file = getFileFromInput(this, name);
-        if (file) {
-          photoUrls[name + '_url'] = await uploadFile(file, folder);
+      try {
+        const folder = 'produtos/' + Date.now();
+        const photoFields = ['foto_frente', 'foto_verso', 'foto_lateral', 'foto_topo', 'foto_uso', 'foto_segurando'];
+        const photoUrls = {};
+        for (const name of photoFields) {
+          const file = getFileFromInput(form, name);
+          if (file) photoUrls[name + '_url'] = await uploadFile(file, folder);
         }
+
+        const { error } = await db.from('produtos').insert({
+          marca_selecionada: form.marca_selecionada.value || null,
+          nome_produto: form.nome_produto.value,
+          url_produto: form.url_produto.value || null,
+          conjunto: getRadioValue(form, 'conjunto'),
+          qtd_pecas: form.qtd_pecas.value || null,
+          altura: form.altura.value ? parseFloat(form.altura.value) : null,
+          largura: form.largura.value ? parseFloat(form.largura.value) : null,
+          cor_principal: form.cor_principal.value,
+          cores_secundarias: getCheckedValues(form, 'cor_sec'),
+          ...photoUrls,
+        });
+
+        if (error) throw error;
+
+        closeResumo();
+        form.reset();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showToast('Produto cadastrado com sucesso! Nossa equipe irá analisar as informações.');
+      } catch (err) {
+        console.error('Erro ao enviar produto:', err);
+        confirmBtn.textContent = 'Confirmar e Enviar';
+        confirmBtn.disabled = false;
+        showToast('Erro ao enviar. Tente novamente.');
       }
-
-      const { error } = await db.from('produtos').insert({
-        marca_selecionada: this.marca_selecionada.value || null,
-        nome_produto: this.nome_produto.value,
-        url_produto: this.url_produto.value || null,
-        conjunto: getRadioValue(this, 'conjunto'),
-        qtd_pecas: this.qtd_pecas.value || null,
-        altura: this.altura.value ? parseFloat(this.altura.value) : null,
-        largura: this.largura.value ? parseFloat(this.largura.value) : null,
-        cor_principal: this.cor_principal.value,
-        cores_secundarias: getCheckedValues(this, 'cor_sec'),
-        ...photoUrls,
-      });
-
-      if (error) throw error;
-
-      btn.innerHTML = '<span>Formulário Enviado</span>';
-      btn.style.background = '#2D6A4F';
-      showToast('Produto cadastrado com sucesso! Nossa equipe irá analisar as informações.');
-    } catch (err) {
-      console.error('Erro ao enviar produto:', err);
-      btn.innerHTML = '<span>Enviar Formulário</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      btn.disabled = false;
-      showToast('Erro ao enviar. Tente novamente.');
-    }
+    });
   });
 
+  function buildResumoInfluencer(form) {
+    const rows = [];
+    const add = (label, value) => { if (value) rows.push({ label, value }); };
+
+    add('Marca', form.marca_selecionada.value);
+    add('Nome artístico', form.nome_artistico.value);
+    add('Idade aparente', form.idade_aparente.value ? form.idade_aparente.value + ' anos' : null);
+    add('Etnia', form.etnia.value);
+    add('Sotaque', form.sotaque.value);
+    add('Intensidade do sotaque', getRadioValue(form, 'intensidade_sotaque'));
+    add('Sotaque (outro)', form.sotaque_outro?.value);
+    add('Tom de pele', form.tom_de_pele.value);
+    add('Cor dos olhos', form.cor_dos_olhos.value);
+    add('Cor do cabelo', form.cor_do_cabelo.value);
+    add('Tipo de cabelo', getRadioValue(form, 'tipo_de_cabelo'));
+    add('Comprimento do cabelo', getRadioValue(form, 'comprimento_cabelo'));
+    add('Estatura', getRadioValue(form, 'estatura'));
+    add('Tipo de corpo', getRadioValue(form, 'tipo_de_corpo'));
+    add('Estilo de maquiagem', getRadioValue(form, 'estilo_de_maquiagem'));
+    add('Tom de voz', getRadioValue(form, 'tom_de_voz'));
+    add('Ritmo de fala', getRadioValue(form, 'ritmo_de_fala'));
+    add('Energia vocal', getRadioValue(form, 'energia_vocal'));
+    add('Estilo de roupa', getRadioValue(form, 'estilo_de_roupa'));
+
+    const paleta = getCheckedValues(form, 'paleta_de_roupas');
+    if (paleta.length) add('Paleta de roupas', paleta.join(', '));
+
+    const acess = getCheckedValues(form, 'acessorios_frequentes');
+    if (acess.length) add('Acessórios frequentes', acess.join(', '));
+
+    add('Inspirações', form.inspiracoes.value);
+    add('Observações gerais', form.observacoes_gerais.value);
+
+    const fotoLabels = { foto_referencia_rosto: 'Rosto', foto_referencia_corpo: 'Corpo', moodboard: 'Moodboard' };
+    const fotosEnviadas = Object.entries(fotoLabels).filter(([name]) => getFileFromInput(form, name)).map(([, l]) => l);
+    if (fotosEnviadas.length) add('Fotos', fotosEnviadas.join(', '));
+
+    return rows;
+  }
+
   // ── Form Influencer ───────────────────────────────────────────
-  document.getElementById('formInfluencer').addEventListener('submit', async function(e) {
+  document.getElementById('formInfluencer').addEventListener('submit', function(e) {
     e.preventDefault();
     if (!validateFields(this,
       ['tipo_de_cabelo', 'comprimento_cabelo', 'estatura', 'tipo_de_corpo',
        'estilo_de_maquiagem', 'tom_de_voz', 'ritmo_de_fala', 'energia_vocal', 'estilo_de_roupa'],
       ['foto_referencia_rosto'])) return;
 
-    const btn = this.querySelector('.submit-btn');
-    btn.innerHTML = '<span>Enviando...</span>';
-    btn.disabled = true;
+    const form = this;
+    showResumo(buildResumoInfluencer(form), async () => {
+      const confirmBtn = document.getElementById('resumoConfirm');
+      confirmBtn.textContent = 'Enviando...';
+      confirmBtn.disabled = true;
 
-    try {
-      const folder = 'influencers/' + Date.now();
-
-      const photoFields = ['foto_referencia_rosto', 'foto_referencia_corpo', 'moodboard'];
-      const photoUrls = {};
-      for (const name of photoFields) {
-        const file = getFileFromInput(this, name);
-        if (file) {
-          photoUrls[name + '_url'] = await uploadFile(file, folder);
+      try {
+        const folder = 'influencers/' + Date.now();
+        const photoFields = ['foto_referencia_rosto', 'foto_referencia_corpo', 'moodboard'];
+        const photoUrls = {};
+        for (const name of photoFields) {
+          const file = getFileFromInput(form, name);
+          if (file) photoUrls[name + '_url'] = await uploadFile(file, folder);
         }
+
+        const { error } = await db.from('influencers').insert({
+          marca_selecionada: form.marca_selecionada.value || null,
+          nome_artistico: form.nome_artistico.value,
+          idade_aparente: form.idade_aparente.value ? parseInt(form.idade_aparente.value) : null,
+          etnia: form.etnia.value || null,
+          sotaque: form.sotaque.value || null,
+          intensidade_sotaque: getRadioValue(form, 'intensidade_sotaque'),
+          sotaque_outro: form.sotaque_outro?.value || null,
+          tom_de_pele: form.tom_de_pele.value || null,
+          cor_dos_olhos: form.cor_dos_olhos.value || null,
+          cor_do_cabelo: form.cor_do_cabelo.value || null,
+          tipo_de_cabelo: getRadioValue(form, 'tipo_de_cabelo'),
+          comprimento_cabelo: getRadioValue(form, 'comprimento_cabelo'),
+          estatura: getRadioValue(form, 'estatura'),
+          tipo_de_corpo: getRadioValue(form, 'tipo_de_corpo'),
+          estilo_de_maquiagem: getRadioValue(form, 'estilo_de_maquiagem'),
+          tom_de_voz: getRadioValue(form, 'tom_de_voz'),
+          ritmo_de_fala: getRadioValue(form, 'ritmo_de_fala'),
+          energia_vocal: getRadioValue(form, 'energia_vocal'),
+          estilo_de_roupa: getRadioValue(form, 'estilo_de_roupa'),
+          paleta_de_roupas: getCheckedValues(form, 'paleta_de_roupas'),
+          acessorios_frequentes: getCheckedValues(form, 'acessorios_frequentes'),
+          inspiracoes: form.inspiracoes.value || null,
+          observacoes_gerais: form.observacoes_gerais.value || null,
+          ...photoUrls,
+        });
+
+        if (error) throw error;
+
+        closeResumo();
+        form.reset();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showToast('Influencer cadastrada com sucesso! Nossa equipe irá analisar as informações.');
+      } catch (err) {
+        console.error('Erro ao enviar influencer:', err);
+        confirmBtn.textContent = 'Confirmar e Enviar';
+        confirmBtn.disabled = false;
+        showToast('Erro ao enviar. Tente novamente.');
       }
-
-      const { error } = await db.from('influencers').insert({
-        marca_selecionada: this.marca_selecionada.value || null,
-        nome_artistico: this.nome_artistico.value,
-        idade_aparente: this.idade_aparente.value ? parseInt(this.idade_aparente.value) : null,
-        etnia: this.etnia.value || null,
-        sotaque: this.sotaque.value || null,
-        intensidade_sotaque: getRadioValue(this, 'intensidade_sotaque'),
-        sotaque_outro: this.sotaque_outro.value || null,
-        tom_de_pele: this.tom_de_pele.value || null,
-        cor_dos_olhos: this.cor_dos_olhos.value || null,
-        cor_do_cabelo: this.cor_do_cabelo.value || null,
-        tipo_de_cabelo: getRadioValue(this, 'tipo_de_cabelo'),
-        comprimento_cabelo: getRadioValue(this, 'comprimento_cabelo'),
-        estatura: getRadioValue(this, 'estatura'),
-        tipo_de_corpo: getRadioValue(this, 'tipo_de_corpo'),
-        estilo_de_maquiagem: getRadioValue(this, 'estilo_de_maquiagem'),
-        tom_de_voz: getRadioValue(this, 'tom_de_voz'),
-        ritmo_de_fala: getRadioValue(this, 'ritmo_de_fala'),
-        energia_vocal: getRadioValue(this, 'energia_vocal'),
-        estilo_de_roupa: getRadioValue(this, 'estilo_de_roupa'),
-        paleta_de_roupas: getCheckedValues(this, 'paleta_de_roupas'),
-        acessorios_frequentes: getCheckedValues(this, 'acessorios_frequentes'),
-        inspiracoes: this.inspiracoes.value || null,
-        observacoes_gerais: this.observacoes_gerais.value || null,
-        ...photoUrls,
-      });
-
-      if (error) throw error;
-
-      btn.innerHTML = '<span>Formulário Enviado</span>';
-      btn.style.background = '#2D6A4F';
-      showToast('Influencer cadastrada com sucesso! Nossa equipe irá analisar as informações.');
-    } catch (err) {
-      console.error('Erro ao enviar influencer:', err);
-      btn.innerHTML = '<span>Enviar Formulário</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      btn.disabled = false;
-      showToast('Erro ao enviar. Tente novamente.');
-    }
+    });
   });
 
   // ── Live validation on blur ───────────────────────────────────
