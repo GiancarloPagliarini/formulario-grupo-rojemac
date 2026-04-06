@@ -1522,33 +1522,6 @@
       </div>
     </div>
 
-    <div class="field-row">
-      <div class="field">
-        <label>Sotaque <span class="opt">opcional</span></label>
-        <div class="select-wrapper">
-          <select name="sotaque" id="sotaqueSelect" onchange="toggleSotaqueOutro(this.value)">
-            <option value="" disabled selected>Selecione</option>
-            <option>Neutro</option><option>Paulistano</option><option>Carioca</option><option>Mineiro</option>
-            <option>Gaúcho</option><option>Nordestino</option><option>Baiano</option><option>Nortista</option>
-            <option>Português de Portugal</option><option>Espanhol</option>
-            <option>Inglês americano</option><option>Inglês britânico</option><option>Outro</option>
-          </select>
-        </div>
-      </div>
-      <div class="field">
-        <label>Intensidade do sotaque <span class="opt">opcional</span></label>
-        <div class="check-group">
-          <label class="check-item"><input type="radio" name="intensidade_sotaque" value="Leve"><span class="check-pill">Leve</span></label>
-          <label class="check-item"><input type="radio" name="intensidade_sotaque" value="Moderado"><span class="check-pill">Moderado</span></label>
-          <label class="check-item"><input type="radio" name="intensidade_sotaque" value="Marcante"><span class="check-pill">Marcante</span></label>
-        </div>
-      </div>
-    </div>
-
-    <div class="field" id="sotaqueOutroField" style="display:none">
-      <label>Qual sotaque? <span class="opt">opcional</span></label>
-      <input type="text" name="sotaque_outro" placeholder="Descreva o sotaque">
-    </div>
   </div>
 
   <!-- ── 02 APARÊNCIA FÍSICA ── -->
@@ -1622,15 +1595,6 @@
           <label class="check-item"><input type="radio" name="comprimento_cabelo" value="Muito longo"><span class="check-pill">Muito longo</span></label>
         </div>
         <div class="field-error">Selecione o comprimento.</div>
-      </div>
-      <div class="field">
-        <label>Estatura <span class="req">*</span></label>
-        <div class="check-group">
-          <label class="check-item"><input type="radio" name="estatura" value="Baixa (abaixo de 1,60m)" required><span class="check-pill">Baixa (&lt;1,60m)</span></label>
-          <label class="check-item"><input type="radio" name="estatura" value="Média (1,60m – 1,70m)"><span class="check-pill">Média (1,60–1,70m)</span></label>
-          <label class="check-item"><input type="radio" name="estatura" value="Alta (acima de 1,70m)"><span class="check-pill">Alta (&gt;1,70m)</span></label>
-        </div>
-        <div class="field-error">Selecione a estatura.</div>
       </div>
     </div>
 
@@ -1947,7 +1911,6 @@
       });
     });
     document.getElementById('qtdPecasField').style.display = 'none';
-    document.getElementById('sotaqueOutroField').style.display = 'none';
     // Reset voice picker
     document.getElementById('elevenlabs_voice_id').value = '';
     document.getElementById('elevenlabs_voice_name').value = '';
@@ -1976,10 +1939,6 @@
       document.getElementById('qtdPecasField').style.display = r.value !== 'individual' ? 'block' : 'none';
     });
   });
-
-  function toggleSotaqueOutro(val) {
-    document.getElementById('sotaqueOutroField').style.display = val === 'Outro' ? 'block' : 'none';
-  }
 
   // ── Photo preview ─────────────────────────────────────────────
   function previewPhoto(input) {
@@ -2382,15 +2341,11 @@
     add('Nome artístico', form.nome_artistico.value);
     add('Idade aparente', form.idade_aparente.value ? form.idade_aparente.value + ' anos' : null);
     add('Etnia', form.etnia.value);
-    add('Sotaque', form.sotaque.value);
-    add('Intensidade do sotaque', getRadioValue(form, 'intensidade_sotaque'));
-    add('Sotaque (outro)', form.sotaque_outro?.value);
     add('Tom de pele', form.tom_de_pele.value);
     add('Cor dos olhos', form.cor_dos_olhos.value);
     add('Cor do cabelo', form.cor_do_cabelo.value);
     add('Tipo de cabelo', getRadioValue(form, 'tipo_de_cabelo'));
     add('Comprimento do cabelo', getRadioValue(form, 'comprimento_cabelo'));
-    add('Estatura', getRadioValue(form, 'estatura'));
     add('Tipo de corpo', getRadioValue(form, 'tipo_de_corpo'));
     add('Estilo de maquiagem', getRadioValue(form, 'estilo_de_maquiagem'));
     add('Voz ElevenLabs', document.getElementById('elevenlabs_voice_name').value);
@@ -2417,7 +2372,7 @@
   document.getElementById('formInfluencer').addEventListener('submit', function(e) {
     e.preventDefault();
     if (!validateFields(this,
-      ['tipo_de_cabelo', 'comprimento_cabelo', 'estatura', 'tipo_de_corpo',
+      ['tipo_de_cabelo', 'comprimento_cabelo', 'tipo_de_corpo',
        'estilo_de_maquiagem', 'estilo_de_roupa'],
       ['foto_referencia_rosto'])) return;
 
@@ -2452,15 +2407,11 @@
           nome_artistico: form.nome_artistico.value,
           idade_aparente: form.idade_aparente.value ? parseInt(form.idade_aparente.value) : null,
           etnia: form.etnia.value || null,
-          sotaque: form.sotaque.value || null,
-          intensidade_sotaque: getRadioValue(form, 'intensidade_sotaque'),
-          sotaque_outro: form.sotaque_outro?.value || null,
           tom_de_pele: form.tom_de_pele.value || null,
           cor_dos_olhos: form.cor_dos_olhos.value || null,
           cor_do_cabelo: form.cor_do_cabelo.value || null,
           tipo_de_cabelo: getRadioValue(form, 'tipo_de_cabelo'),
           comprimento_cabelo: getRadioValue(form, 'comprimento_cabelo'),
-          estatura: getRadioValue(form, 'estatura'),
           tipo_de_corpo: getRadioValue(form, 'tipo_de_corpo'),
           estilo_de_maquiagem: getRadioValue(form, 'estilo_de_maquiagem'),
           elevenlabs_voice_id: document.getElementById('elevenlabs_voice_id').value || null,
