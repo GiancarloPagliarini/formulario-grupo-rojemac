@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wolff · Cadastro de Produto</title>
+<title>Cadastro de Produto</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -1842,15 +1842,19 @@
   const tabMeta = {
     produto: {
       title: 'Formulário de<br><em>Cadastro de Produto</em>',
+      pageTitle: 'Cadastro de Produto',
       desc:  'Preencha as informações abaixo com precisão. Esses dados são essenciais para criar representações realistas do produto nas produções com a Influencer de IA.',
     },
     influencer: {
       title: 'Formulário de<br><em>Cadastro de Influencer</em>',
+      pageTitle: 'Cadastro de Influencer',
       desc:  'Defina a identidade visual, física e de estilo da sua Influencer de IA. Quanto mais detalhes, mais fiel será a representação gerada.',
     },
   };
+  let currentTab = 'produto';
 
   function switchTab(tab) {
+    currentTab = tab;
     // Panels
     document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + tab).classList.add('active');
@@ -1863,6 +1867,10 @@
     document.getElementById('heroTitle').innerHTML = tabMeta[tab].title;
     document.getElementById('heroDesc').textContent = tabMeta[tab].desc;
 
+    // Page title
+    const brand = document.querySelector('input[name="marca_selecionada"]').value;
+    document.title = brand ? brand + ' · ' + tabMeta[tab].pageTitle : tabMeta[tab].pageTitle;
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -1873,6 +1881,7 @@
     setTimeout(() => picker.style.display = 'none', 400);
     applyTheme(brand);
     document.getElementById('heroTagLabel').textContent = 'Influencer de IA · ' + brand;
+    document.title = brand + ' · ' + tabMeta[currentTab].pageTitle;
     document.querySelectorAll('input[name="marca_selecionada"]').forEach(i => i.value = brand);
     const logoMap = { Wolff: 'wolff_semfundo.png', Lyor: 'lyor_semfundo.png' };
     const logoEl = document.getElementById('heroLogo');
@@ -1922,6 +1931,7 @@
     loadElevenLabsVoices();
     applyTheme('Wolff');
     document.getElementById('heroTagLabel').textContent = 'Influencer de IA';
+    document.title = 'Cadastro de Produto';
     document.querySelectorAll('input[name="marca_selecionada"]').forEach(i => i.value = '');
   }
 
