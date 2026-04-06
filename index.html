@@ -1423,6 +1423,7 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   // ── Brand themes ──────────────────────────────────────────────
   const brandThemes = {
@@ -1586,8 +1587,39 @@
     setTimeout(() => t.classList.remove('show'), 3500);
   }
 
+  // ── Supabase ─────────────────────────────────────────────────
+  const SUPABASE_URL = 'https://biicnhanojcoduylpgrr.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpaWNuaGFub2pjb2R1eWxwZ3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDY3NzAsImV4cCI6MjA5MDk4Mjc3MH0.bg_dHNWbSsNmpkJuOe6R-t8nTx5MT_G5_s1j522jD8Q';
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  async function uploadFile(file, folder) {
+    const ext = file.name.split('.').pop();
+    const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error } = await db.storage
+      .from('formulario-uploads')
+      .upload(path, file);
+    if (error) throw error;
+    const { data } = db.storage
+      .from('formulario-uploads')
+      .getPublicUrl(path);
+    return data.publicUrl;
+  }
+
+  function getFileFromInput(form, name) {
+    const input = form.querySelector(`input[name="${name}"]`);
+    return input?.files?.[0] || null;
+  }
+
+  function getCheckedValues(form, name) {
+    return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(i => i.value);
+  }
+
+  function getRadioValue(form, name) {
+    return form.querySelector(`input[name="${name}"]:checked`)?.value || null;
+  }
+
   // ── Validation helper ─────────────────────────────────────────
-  function validateForm(form, requiredRadios, requiredPhotos, successMsg) {
+  function validateFields(form, requiredRadios, requiredPhotos) {
     let valid = true;
 
     form.querySelectorAll('[required]').forEach(field => {
@@ -1616,37 +1648,122 @@
     });
 
     if (!valid) {
-      showToast('⚠️  Preencha todos os campos obrigatórios antes de enviar.');
+      showToast('Preencha todos os campos obrigatórios antes de enviar.');
       const first = form.querySelector('.invalid, .has-error');
       if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
     }
-
-    const btn = form.querySelector('.submit-btn');
-    btn.innerHTML = '<span>Enviando...</span>';
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.innerHTML = '<span>✓  Formulário Enviado</span>';
-      btn.style.background = '#2D6A4F';
-      showToast(successMsg);
-    }, 1200);
+    return valid;
   }
 
   // ── Form Produto ──────────────────────────────────────────────
-  document.getElementById('formProduto').addEventListener('submit', function(e) {
+  document.getElementById('formProduto').addEventListener('submit', async function(e) {
     e.preventDefault();
-    validateForm(this, ['conjunto'], ['foto_frente', 'foto_verso', 'foto_lateral'],
-      '✓  Produto cadastrado com sucesso! Nossa equipe irá analisar as informações.');
+    if (!validateFields(this, ['conjunto'], ['foto_frente', 'foto_verso', 'foto_lateral'])) return;
+
+    const btn = this.querySelector('.submit-btn');
+    btn.innerHTML = '<span>Enviando...</span>';
+    btn.disabled = true;
+
+    try {
+      const folder = 'produtos/' + Date.now();
+
+      const photoFields = ['foto_frente', 'foto_verso', 'foto_lateral', 'foto_topo', 'foto_uso', 'foto_segurando'];
+      const photoUrls = {};
+      for (const name of photoFields) {
+        const file = getFileFromInput(this, name);
+        if (file) {
+          photoUrls[name + '_url'] = await uploadFile(file, folder);
+        }
+      }
+
+      const { error } = await db.from('produtos').insert({
+        marca_selecionada: this.marca_selecionada.value || null,
+        nome_produto: this.nome_produto.value,
+        url_produto: this.url_produto.value || null,
+        conjunto: getRadioValue(this, 'conjunto'),
+        qtd_pecas: this.qtd_pecas.value || null,
+        altura: this.altura.value ? parseFloat(this.altura.value) : null,
+        largura: this.largura.value ? parseFloat(this.largura.value) : null,
+        cor_principal: this.cor_principal.value,
+        cores_secundarias: getCheckedValues(this, 'cor_sec'),
+        ...photoUrls,
+      });
+
+      if (error) throw error;
+
+      btn.innerHTML = '<span>Formulário Enviado</span>';
+      btn.style.background = '#2D6A4F';
+      showToast('Produto cadastrado com sucesso! Nossa equipe irá analisar as informações.');
+    } catch (err) {
+      console.error('Erro ao enviar produto:', err);
+      btn.innerHTML = '<span>Enviar Formulário</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      btn.disabled = false;
+      showToast('Erro ao enviar. Tente novamente.');
+    }
   });
 
   // ── Form Influencer ───────────────────────────────────────────
-  document.getElementById('formInfluencer').addEventListener('submit', function(e) {
+  document.getElementById('formInfluencer').addEventListener('submit', async function(e) {
     e.preventDefault();
-    validateForm(this,
+    if (!validateFields(this,
       ['tipo_de_cabelo', 'comprimento_cabelo', 'estatura', 'tipo_de_corpo',
        'estilo_de_maquiagem', 'tom_de_voz', 'ritmo_de_fala', 'energia_vocal', 'estilo_de_roupa'],
-      ['foto_referencia_rosto'],
-      '✓  Influencer cadastrada com sucesso! Nossa equipe irá analisar as informações.');
+      ['foto_referencia_rosto'])) return;
+
+    const btn = this.querySelector('.submit-btn');
+    btn.innerHTML = '<span>Enviando...</span>';
+    btn.disabled = true;
+
+    try {
+      const folder = 'influencers/' + Date.now();
+
+      const photoFields = ['foto_referencia_rosto', 'foto_referencia_corpo', 'moodboard'];
+      const photoUrls = {};
+      for (const name of photoFields) {
+        const file = getFileFromInput(this, name);
+        if (file) {
+          photoUrls[name + '_url'] = await uploadFile(file, folder);
+        }
+      }
+
+      const { error } = await db.from('influencers').insert({
+        marca_selecionada: this.marca_selecionada.value || null,
+        nome_artistico: this.nome_artistico.value,
+        idade_aparente: this.idade_aparente.value ? parseInt(this.idade_aparente.value) : null,
+        etnia: this.etnia.value || null,
+        sotaque: this.sotaque.value || null,
+        intensidade_sotaque: getRadioValue(this, 'intensidade_sotaque'),
+        sotaque_outro: this.sotaque_outro.value || null,
+        tom_de_pele: this.tom_de_pele.value || null,
+        cor_dos_olhos: this.cor_dos_olhos.value || null,
+        cor_do_cabelo: this.cor_do_cabelo.value || null,
+        tipo_de_cabelo: getRadioValue(this, 'tipo_de_cabelo'),
+        comprimento_cabelo: getRadioValue(this, 'comprimento_cabelo'),
+        estatura: getRadioValue(this, 'estatura'),
+        tipo_de_corpo: getRadioValue(this, 'tipo_de_corpo'),
+        estilo_de_maquiagem: getRadioValue(this, 'estilo_de_maquiagem'),
+        tom_de_voz: getRadioValue(this, 'tom_de_voz'),
+        ritmo_de_fala: getRadioValue(this, 'ritmo_de_fala'),
+        energia_vocal: getRadioValue(this, 'energia_vocal'),
+        estilo_de_roupa: getRadioValue(this, 'estilo_de_roupa'),
+        paleta_de_roupas: getCheckedValues(this, 'paleta_de_roupas'),
+        acessorios_frequentes: getCheckedValues(this, 'acessorios_frequentes'),
+        inspiracoes: this.inspiracoes.value || null,
+        observacoes_gerais: this.observacoes_gerais.value || null,
+        ...photoUrls,
+      });
+
+      if (error) throw error;
+
+      btn.innerHTML = '<span>Formulário Enviado</span>';
+      btn.style.background = '#2D6A4F';
+      showToast('Influencer cadastrada com sucesso! Nossa equipe irá analisar as informações.');
+    } catch (err) {
+      console.error('Erro ao enviar influencer:', err);
+      btn.innerHTML = '<span>Enviar Formulário</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      btn.disabled = false;
+      showToast('Erro ao enviar. Tente novamente.');
+    }
   });
 
   // ── Live validation on blur ───────────────────────────────────
