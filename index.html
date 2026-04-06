@@ -489,6 +489,203 @@
     opacity: 1;
   }
 
+  /* ── VOICE PICKER ── */
+  .voice-picker { margin-top: 8px; }
+
+  .voice-search {
+    width: 100%;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px 14px 42px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--ink);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238A7E6E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 14px center;
+  }
+
+  .voice-search::placeholder { color: #BBB1A0; font-style: italic; }
+  .voice-search:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200,169,106,0.12); }
+  .voice-search:hover:not(:focus) { border-color: var(--muted); }
+
+  .voice-list-wrapper {
+    margin-top: 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    max-height: 340px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .voice-list-wrapper::-webkit-scrollbar { width: 6px; }
+  .voice-list-wrapper::-webkit-scrollbar-track { background: transparent; }
+  .voice-list-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .voice-list-wrapper::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  .voice-list { display: flex; flex-direction: column; }
+
+  .voice-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+    border-bottom: 1px solid var(--cream-dark);
+    position: relative;
+  }
+
+  .voice-item:last-child { border-bottom: none; }
+
+  .voice-item:hover { background: var(--cream); }
+
+  .voice-item.selected {
+    background: rgba(200,169,106,0.08);
+  }
+
+  .voice-item.selected::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .voice-play-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.18s ease;
+    color: var(--muted);
+  }
+
+  .voice-play-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(200,169,106,0.06);
+  }
+
+  .voice-item.playing .voice-play-btn {
+    border-color: var(--gold);
+    background: var(--gold);
+    color: var(--white);
+  }
+
+  .voice-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .voice-item-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .voice-item-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 3px;
+  }
+
+  .voice-item-label {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+
+  .voice-item-label + .voice-item-label::before {
+    content: '\00b7';
+    margin-right: 4px;
+  }
+
+  .voice-item-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s ease;
+  }
+
+  .voice-item.selected .voice-item-check {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .voice-list-loading {
+    text-align: center;
+    padding: 40px 16px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .voice-list-loading .spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: voiceSpin 0.6s linear infinite;
+    margin-bottom: 8px;
+  }
+
+  @keyframes voiceSpin { to { transform: rotate(360deg); } }
+
+  .voice-load-more {
+    padding: 10px;
+    background: var(--cream);
+    border: none;
+    border-top: 1px solid var(--cream-dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    text-align: center;
+  }
+
+  .voice-load-more:hover { color: var(--gold); background: var(--cream-dark); }
+
+  .voice-error {
+    font-size: 11px;
+    color: var(--red);
+    margin-top: 6px;
+    display: none;
+  }
+
+  .voice-error.show { display: block; }
+
   /* ── UPLOAD ── */
   .upload-grid {
     display: grid;
@@ -1471,37 +1668,30 @@
       <h2 class="section-title">Voz</h2>
     </div>
 
-    <div class="field-row">
-      <div class="field">
-        <label>Tom de voz <span class="req">*</span></label>
-        <div class="check-group">
-          <label class="check-item"><input type="radio" name="tom_de_voz" value="Grave" required><span class="check-pill">Grave</span></label>
-          <label class="check-item"><input type="radio" name="tom_de_voz" value="Médio"><span class="check-pill">Médio</span></label>
-          <label class="check-item"><input type="radio" name="tom_de_voz" value="Agudo"><span class="check-pill">Agudo</span></label>
-        </div>
-        <div class="field-error">Selecione o tom de voz.</div>
-      </div>
-      <div class="field">
-        <label>Ritmo de fala <span class="req">*</span></label>
-        <div class="check-group">
-          <label class="check-item"><input type="radio" name="ritmo_de_fala" value="Acelerado" required><span class="check-pill">Acelerado</span></label>
-          <label class="check-item"><input type="radio" name="ritmo_de_fala" value="Pausado"><span class="check-pill">Pausado</span></label>
-          <label class="check-item"><input type="radio" name="ritmo_de_fala" value="Equilibrado"><span class="check-pill">Equilibrado</span></label>
-        </div>
-        <div class="field-error">Selecione o ritmo de fala.</div>
-      </div>
-    </div>
+    <div class="note">Selecione a voz da ElevenLabs para a influencer. Clique no botão play para ouvir uma prévia antes de escolher.</div>
 
     <div class="field">
-      <label>Energia vocal <span class="req">*</span></label>
-      <div class="check-group">
-        <label class="check-item"><input type="radio" name="energia_vocal" value="Animada" required><span class="check-pill">Animada</span></label>
-        <label class="check-item"><input type="radio" name="energia_vocal" value="Serena"><span class="check-pill">Serena</span></label>
-        <label class="check-item"><input type="radio" name="energia_vocal" value="Imponente"><span class="check-pill">Imponente</span></label>
-        <label class="check-item"><input type="radio" name="energia_vocal" value="Suave"><span class="check-pill">Suave</span></label>
-        <label class="check-item"><input type="radio" name="energia_vocal" value="Intensa"><span class="check-pill">Intensa</span></label>
+      <label>Voz da influencer <span class="req">*</span></label>
+      <input type="hidden" name="elevenlabs_voice_id" id="elevenlabs_voice_id">
+      <input type="hidden" name="elevenlabs_voice_name" id="elevenlabs_voice_name">
+      <div class="voice-picker">
+        <input type="text" class="voice-search" id="voiceSearch" placeholder="Buscar voz pelo nome... ex: brasileira, jovem, calm">
+        <div class="voice-list-wrapper">
+          <div class="voice-list" id="voiceGrid">
+            <div class="voice-list-loading">
+              <div class="spinner"></div><br>Carregando vozes...
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="field-error">Selecione a energia vocal.</div>
+      <div class="voice-error" id="voiceError">Selecione uma voz ou descreva como deseja a voz.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label>Não encontrou a voz ideal? Descreva como deseja <span class="opt">opcional</span></label>
+      <textarea name="voz_descricao_custom" id="vozDescricaoCustom" rows="4" placeholder="Ex: Voz feminina jovem, tom médio, ritmo pausado e acolhedor. Energia suave e intimista, como se estivesse conversando com uma amiga. Sotaque neutro brasileiro, sem regionalismos marcantes."></textarea>
     </div>
   </div>
 
@@ -1758,6 +1948,15 @@
     });
     document.getElementById('qtdPecasField').style.display = 'none';
     document.getElementById('sotaqueOutroField').style.display = 'none';
+    // Reset voice picker
+    document.getElementById('elevenlabs_voice_id').value = '';
+    document.getElementById('elevenlabs_voice_name').value = '';
+    document.getElementById('voiceSearch').value = '';
+    document.getElementById('voiceError').classList.remove('show');
+    if (voiceAudio) { voiceAudio.pause(); voiceAudio = null; }
+    voicePlayingId = null;
+    voiceCurrentSearch = '';
+    loadElevenLabsVoices();
     applyTheme('Wolff');
     document.getElementById('heroTagLabel').textContent = 'Influencer de IA';
     document.querySelectorAll('input[name="marca_selecionada"]').forEach(i => i.value = '');
@@ -1829,6 +2028,187 @@
   const SUPABASE_URL = 'https://biicnhanojcoduylpgrr.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpaWNuaGFub2pjb2R1eWxwZ3JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDY3NzAsImV4cCI6MjA5MDk4Mjc3MH0.bg_dHNWbSsNmpkJuOe6R-t8nTx5MT_G5_s1j522jD8Q';
   const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const ELEVENLABS_API_KEY = 'sk_c0c4b0617db21d284b36fa30ab8c7637998c7297de313ccf';
+
+  // ── ElevenLabs Voice Picker ─────────────────────────────────
+  let voiceAudio = null;
+  let voicePlayingId = null;
+  let voiceNextCursor = null;
+  let voiceHasMore = false;
+  let voiceCurrentSearch = '';
+
+  async function loadElevenLabsVoices(search = '', append = false) {
+    const grid = document.getElementById('voiceGrid');
+    if (!append) {
+      grid.innerHTML = '<div class="voice-list-loading"><div class="spinner"></div><br>Carregando vozes...</div>';
+      voiceNextCursor = null;
+    }
+
+    const params = new URLSearchParams({
+      page_size: '50',
+    });
+    if (search) {
+      params.set('search', search);
+    }
+    if (voiceNextCursor && append) params.set('next_cursor', voiceNextCursor);
+
+    try {
+      const res = await fetch(`https://api.elevenlabs.io/v2/voices?${params}`, {
+        headers: { 'xi-api-key': ELEVENLABS_API_KEY }
+      });
+      if (!res.ok) throw new Error('API error');
+      const data = await res.json();
+
+      voiceHasMore = data.has_more || false;
+      voiceNextCursor = data.next_cursor || null;
+
+      if (!append) grid.innerHTML = '';
+
+      // Remove existing sentinel
+      grid.querySelector('.voice-scroll-sentinel')?.remove();
+
+      // Filter female only client-side (API may ignore gender param on search)
+      const voices = (data.voices || []).filter(v => v.labels?.gender === 'female');
+
+      if (voices.length === 0) {
+        if (!append) grid.innerHTML = '<div class="voice-list-loading">Nenhuma voz encontrada.</div>';
+        return;
+      }
+
+      const selectedId = document.getElementById('elevenlabs_voice_id').value;
+
+      voices.forEach(voice => {
+        const item = document.createElement('div');
+        item.className = 'voice-item' + (voice.voice_id === selectedId ? ' selected' : '');
+        item.dataset.voiceId = voice.voice_id;
+        item.dataset.voiceName = voice.name;
+
+        const labels = [];
+        if (voice.labels) {
+          if (voice.labels.accent) labels.push(voice.labels.accent);
+          if (voice.labels.age) labels.push(voice.labels.age);
+          if (voice.labels.use_case) labels.push(voice.labels.use_case);
+          if (voice.labels.description) labels.push(voice.labels.description);
+        }
+
+        item.innerHTML = `
+          <button type="button" class="voice-play-btn">
+            <svg class="play-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg>
+            <svg class="pause-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+          </button>
+          <div class="voice-item-info">
+            <div class="voice-item-name">${voice.name}</div>
+            ${labels.length ? `<div class="voice-item-labels">${labels.map(l => `<span class="voice-item-label">${l}</span>`).join('')}</div>` : ''}
+          </div>
+          <div class="voice-item-check">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:${voice.voice_id === selectedId ? 'block' : 'none'}"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        `;
+
+        item.querySelector('.voice-play-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleVoicePreview(voice.voice_id, voice.preview_url);
+        });
+
+        item.addEventListener('click', () => selectVoice(voice.voice_id, voice.name));
+
+        grid.appendChild(item);
+      });
+
+      // Add sentinel for infinite scroll
+      let sentinel = grid.querySelector('.voice-scroll-sentinel');
+      if (sentinel) sentinel.remove();
+      if (voiceHasMore) {
+        sentinel = document.createElement('div');
+        sentinel.className = 'voice-scroll-sentinel voice-list-loading';
+        sentinel.style.padding = '16px';
+        sentinel.innerHTML = '<div class="spinner"></div>';
+        grid.appendChild(sentinel);
+      }
+    } catch (err) {
+      console.error('Erro ao carregar vozes:', err);
+      if (!append) grid.innerHTML = '<div class="voice-list-loading">Erro ao carregar vozes. Tente novamente.</div>';
+    }
+  }
+
+  // Infinite scroll on voice list
+  let voiceLoadingMore = false;
+  document.querySelector('.voice-list-wrapper').addEventListener('scroll', function() {
+    if (!voiceHasMore || voiceLoadingMore) return;
+    const { scrollTop, scrollHeight, clientHeight } = this;
+    if (scrollTop + clientHeight >= scrollHeight - 60) {
+      voiceLoadingMore = true;
+      loadElevenLabsVoices(voiceCurrentSearch, true).then(() => { voiceLoadingMore = false; });
+    }
+  });
+
+  function toggleVoicePreview(voiceId, previewUrl) {
+    if (!previewUrl) return;
+
+    // If same voice is playing, pause it
+    if (voicePlayingId === voiceId && voiceAudio && !voiceAudio.paused) {
+      voiceAudio.pause();
+      voicePlayingId = null;
+      updatePlayingState(null);
+      return;
+    }
+
+    // Stop any current audio
+    if (voiceAudio) {
+      voiceAudio.pause();
+      voiceAudio = null;
+    }
+
+    voiceAudio = new Audio(previewUrl);
+    voicePlayingId = voiceId;
+    updatePlayingState(voiceId);
+
+    voiceAudio.addEventListener('ended', () => {
+      voicePlayingId = null;
+      updatePlayingState(null);
+    });
+
+    voiceAudio.play();
+  }
+
+  function updatePlayingState(activeId) {
+    document.querySelectorAll('.voice-item').forEach(item => {
+      const isPlaying = item.dataset.voiceId === activeId;
+      item.classList.toggle('playing', isPlaying);
+      item.querySelector('.play-icon').style.display = isPlaying ? 'none' : '';
+      item.querySelector('.pause-icon').style.display = isPlaying ? '' : 'none';
+    });
+  }
+
+  function selectVoice(voiceId, voiceName) {
+    document.getElementById('elevenlabs_voice_id').value = voiceId;
+    document.getElementById('elevenlabs_voice_name').value = voiceName;
+    document.querySelectorAll('.voice-item').forEach(c => {
+      c.classList.remove('selected');
+      c.querySelector('.voice-item-check svg').style.display = 'none';
+    });
+    const item = document.querySelector(`.voice-item[data-voice-id="${voiceId}"]`);
+    if (item) {
+      item.classList.add('selected');
+      item.querySelector('.voice-item-check svg').style.display = 'block';
+    }
+    // Clear error
+    document.getElementById('voiceError').classList.remove('show');
+  }
+
+  // Debounced search
+  let voiceSearchTimeout;
+  document.getElementById('voiceSearch').addEventListener('input', (e) => {
+    clearTimeout(voiceSearchTimeout);
+    voiceSearchTimeout = setTimeout(() => {
+      voiceCurrentSearch = e.target.value.trim();
+      loadElevenLabsVoices(voiceCurrentSearch);
+    }, 400);
+  });
+
+  // Load voices on page load
+  loadElevenLabsVoices();
 
   async function uploadFile(file, folder) {
     const ext = file.name.split('.').pop();
@@ -2013,9 +2393,8 @@
     add('Estatura', getRadioValue(form, 'estatura'));
     add('Tipo de corpo', getRadioValue(form, 'tipo_de_corpo'));
     add('Estilo de maquiagem', getRadioValue(form, 'estilo_de_maquiagem'));
-    add('Tom de voz', getRadioValue(form, 'tom_de_voz'));
-    add('Ritmo de fala', getRadioValue(form, 'ritmo_de_fala'));
-    add('Energia vocal', getRadioValue(form, 'energia_vocal'));
+    add('Voz ElevenLabs', document.getElementById('elevenlabs_voice_name').value);
+    add('Descrição da voz', form.voz_descricao_custom?.value);
     add('Estilo de roupa', getRadioValue(form, 'estilo_de_roupa'));
 
     const paleta = getCheckedValues(form, 'paleta_de_roupas');
@@ -2039,8 +2418,19 @@
     e.preventDefault();
     if (!validateFields(this,
       ['tipo_de_cabelo', 'comprimento_cabelo', 'estatura', 'tipo_de_corpo',
-       'estilo_de_maquiagem', 'tom_de_voz', 'ritmo_de_fala', 'energia_vocal', 'estilo_de_roupa'],
+       'estilo_de_maquiagem', 'estilo_de_roupa'],
       ['foto_referencia_rosto'])) return;
+
+    // Custom voice validation: must select a voice OR describe it
+    const hasVoice = document.getElementById('elevenlabs_voice_id').value;
+    const hasCustomDesc = document.getElementById('vozDescricaoCustom').value.trim();
+    if (!hasVoice && !hasCustomDesc) {
+      document.getElementById('voiceError').classList.add('show');
+      document.getElementById('voiceError').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      showToast('Selecione uma voz ou descreva como deseja a voz da influencer.');
+      return;
+    }
+    document.getElementById('voiceError').classList.remove('show');
 
     const form = this;
     showResumo(buildResumoInfluencer(form), async () => {
@@ -2073,9 +2463,9 @@
           estatura: getRadioValue(form, 'estatura'),
           tipo_de_corpo: getRadioValue(form, 'tipo_de_corpo'),
           estilo_de_maquiagem: getRadioValue(form, 'estilo_de_maquiagem'),
-          tom_de_voz: getRadioValue(form, 'tom_de_voz'),
-          ritmo_de_fala: getRadioValue(form, 'ritmo_de_fala'),
-          energia_vocal: getRadioValue(form, 'energia_vocal'),
+          elevenlabs_voice_id: document.getElementById('elevenlabs_voice_id').value || null,
+          elevenlabs_voice_name: document.getElementById('elevenlabs_voice_name').value || null,
+          voz_descricao_custom: form.voz_descricao_custom?.value || null,
           estilo_de_roupa: getRadioValue(form, 'estilo_de_roupa'),
           paleta_de_roupas: getCheckedValues(form, 'paleta_de_roupas'),
           acessorios_frequentes: getCheckedValues(form, 'acessorios_frequentes'),
