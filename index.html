@@ -1046,6 +1046,12 @@
       </div>
       <div class="brand-card-name">Lyor</div>
     </div>
+    <div class="brand-card" onclick="selectBrand('Rojemac')">
+      <div class="brand-card-badge">
+        <img src="rojemac_logo.png" alt="Rojemac">
+      </div>
+      <div class="brand-card-name">Rojemac</div>
+    </div>
   </div>
 </div>
 
@@ -1671,6 +1677,17 @@
       '--cream-dark':    '#EDE8E3',
       '--border':        '#C8C2BC',
       '--muted':         '#8D8580',
+    },
+    Rojemac: {
+      '--ink':           '#1B3556',
+      '--surface':       '#1B3556',
+      '--surface-hover': '#14283F',
+      '--gold':          '#D4B989',
+      '--gold-light':    '#EADCBE',
+      '--cream':         '#F7F4EE',
+      '--cream-dark':    '#EBE5D9',
+      '--border':        '#D8D0BE',
+      '--muted':         '#8A7E6A',
     }
   };
 
@@ -1720,7 +1737,7 @@
     applyTheme(brand);
     document.getElementById('heroTagLabel').textContent = 'Influencer de IA · ' + brand;
     document.querySelectorAll('input[name="marca_selecionada"]').forEach(i => i.value = brand);
-    const logoMap = { Wolff: 'wolff_semfundo.png', Lyor: 'lyor_semfundo.png' };
+    const logoMap = { Wolff: 'wolff_semfundo.png', Lyor: 'lyor_semfundo.png', Rojemac: 'rojemac_logo.png' };
     const logoEl = document.getElementById('heroLogo');
     const bannerEl = document.getElementById('heroBannerLogo');
     const bannerWrapper = document.getElementById('heroBrandBanner');
